@@ -1,18 +1,91 @@
 /* ====================================================
-   IGNIS LAYOUT — Navigation & Footer
+   IGNIS LAYOUT — Navigation, Footer & Atmosphere
    ==================================================== */
 
+/* ── App Shell ── */
 .ignis-app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .ignis-app > main {
   flex: 1;
+  position: relative;
+  z-index: 2;
 }
 
-/* ── Navigation ── */
+/* ====================================================
+   ATMOSPHERIC BACKGROUND — The Living Dark Canvas
+   ==================================================== */
+.ignis-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Primary gradient — warm core, slow drift */
+.ignis-atmosphere__gradient {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(
+    ellipse at 70% 30%,
+    rgba(255, 106, 0, 0.06) 0%,
+    rgba(204, 46, 46, 0.03) 25%,
+    transparent 55%
+  );
+  animation: atmosphere-drift 25s ease-in-out infinite alternate;
+}
+
+/* Secondary gradient — deeper, slower, offset */
+.ignis-atmosphere__gradient--secondary {
+  background: radial-gradient(
+    ellipse at 20% 80%,
+    rgba(255, 140, 0, 0.04) 0%,
+    rgba(255, 60, 60, 0.02) 30%,
+    transparent 60%
+  );
+  animation: atmosphere-drift-alt 30s ease-in-out infinite alternate;
+}
+
+/* Noise/grain texture for cinematic depth */
+.ignis-atmosphere__noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+@keyframes atmosphere-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(5%, -3%) scale(1.05); }
+}
+
+@keyframes atmosphere-drift-alt {
+  0%   { transform: translate(0, 0) scale(1.02); }
+  100% { transform: translate(-4%, 5%) scale(0.98); }
+}
+
+/* ====================================================
+   GLOBAL CURSOR-FOLLOWING GLOW
+   ==================================================== */
+.ignis-cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: background;
+}
+
+/* ====================================================
+   NAVIGATION
+   ==================================================== */
 .ignis-nav {
   position: fixed;
   top: 0;
@@ -24,11 +97,13 @@
 }
 
 .ignis-nav--scrolled {
-  background: rgba(8, 8, 8, 0.92);
+  background: rgba(8, 8, 8, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 14px 0;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .ignis-nav__inner {
@@ -87,11 +162,17 @@
   width: 100%;
 }
 
-/* ── Footer ── */
+/* ====================================================
+   FOOTER
+   ==================================================== */
 .ignis-footer {
   padding: var(--space-10) 0;
-  border-top: 1px solid var(--ignis-border);
-  background: var(--ignis-deep);
+  border-top: 1px solid rgba(42, 42, 42, 0.5);
+  background: rgba(17, 17, 17, 0.8);
+  backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 2;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .ignis-footer__inner {
@@ -105,7 +186,9 @@
   gap: var(--space-8);
 }
 
-/* ── Responsive ── */
+/* ====================================================
+   Responsive
+   ==================================================== */
 @media (max-width: 768px) {
   .ignis-nav__links {
     display: none;

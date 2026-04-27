@@ -27,6 +27,19 @@
   overflow: hidden;
 }
 
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(255, 106, 0, 0.12) 0%, transparent 70%);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .hero__glow {
   position: absolute;
   inset: 0;
@@ -63,6 +76,22 @@
   border-radius: 50%;
   box-shadow: 0 0 8px var(--ignis-orange);
   animation: float-ember linear infinite;
+}
+
+/* Reusable section embers container */
+.section-embers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Wrapper handles cursor-push offset without conflicting with CSS animation */
+.ember-wrapper {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
 }
 
 .hero__content {
@@ -195,25 +224,48 @@
   border-radius: var(--radius-pill);
 }
 
-/* ====================================================
-   SECTION 2: ACTIVE MODULES
-   ==================================================== */
+.modules-section {
+  position: relative;
+}
+
+.modules-section::before {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: 50%;
+  width: 100vw;
+  height: 40vh;
+  background: radial-gradient(ellipse at center, rgba(255, 60, 60, 0.05) 0%, transparent 70%);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ignis-section > * {
+  position: relative;
+  z-index: 1;
+}
+
 .modules-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
   margin-top: var(--space-10);
+  align-items: stretch;
 }
 
 .module-card {
   padding: var(--space-8);
   cursor: pointer;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .module-card__header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: var(--space-5);
 }
@@ -236,16 +288,39 @@
   font-size: var(--text-sm);
   line-height: 1.6;
   margin-bottom: var(--space-5);
+  flex: 1;
 }
 
 .module-card__footer {
   padding-top: var(--space-4);
   border-top: 1px solid var(--ignis-border);
+  margin-top: auto;
 }
 
-/* ====================================================
-   SECTION 3: BATTLE STATION (POLL)
-   ==================================================== */
+.battle-section {
+  position: relative;
+}
+
+.battle-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50vw;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 80% 30%, rgba(255, 60, 60, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 70%, rgba(255, 106, 0, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: battle-bleed-pulse 6s ease-in-out infinite;
+}
+
+@keyframes battle-bleed-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
 .battle-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -329,9 +404,31 @@
   border-top: 1px solid var(--ignis-border);
 }
 
-/* ====================================================
-   SECTION 4: FORGE (CREATE POLL)
-   ==================================================== */
+.create-section {
+  position: relative;
+}
+
+.create-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  width: 40vw;
+  height: 40vw;
+  background:
+    radial-gradient(circle, rgba(255, 140, 0, 0.09) 0%, transparent 50%),
+    radial-gradient(circle at 60% 40%, rgba(255, 200, 0, 0.04) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: forge-bleed-rotate 20s linear infinite;
+}
+
+@keyframes forge-bleed-rotate {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 .create-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -394,9 +491,30 @@
   margin-bottom: var(--space-8);
 }
 
-/* ====================================================
-   SECTION 5: ARENA COMMS (CHAT)
-   ==================================================== */
+.chat-section {
+  position: relative;
+}
+
+.chat-section::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60vw;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at 70% 80%, rgba(0, 180, 216, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 20%, rgba(0, 140, 200, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+  animation: chat-bleed-breathe 8s ease-in-out infinite;
+}
+
+@keyframes chat-bleed-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 .chat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -508,9 +626,31 @@
   box-shadow: 0 0 0 3px var(--ignis-glow-soft);
 }
 
-/* ====================================================
-   SECTION 6: GLOBAL STANDINGS
-   ==================================================== */
+.standings-section {
+  position: relative;
+}
+
+.standings-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80vw;
+  height: 50vh;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 106, 0, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 60%, rgba(255, 60, 60, 0.04) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: standings-bleed-glow 5s ease-in-out infinite;
+}
+
+@keyframes standings-bleed-glow {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.03); }
+}
+
 .standings-showcase {
   margin-top: var(--space-10);
   display: grid;
@@ -596,9 +736,33 @@
   transition: width 1.5s var(--ease-slow);
 }
 
-/* ====================================================
-   SECTION 7: COMMUNITY / FACTIONS
-   ==================================================== */
+.community-section {
+  position: relative;
+}
+
+.community-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255, 106, 0, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(0, 180, 216, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 60% 50%, rgba(45, 159, 45, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 90% 70%, rgba(155, 93, 229, 0.04) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+  animation: community-bleed-shift 12s ease-in-out infinite;
+}
+
+@keyframes community-bleed-shift {
+  0%, 100% { opacity: 0.5; }
+  33% { opacity: 0.8; }
+  66% { opacity: 0.6; }
+}
+
 .community-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr;

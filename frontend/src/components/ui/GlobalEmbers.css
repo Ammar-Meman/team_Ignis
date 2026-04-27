@@ -1,0 +1,60 @@
+/* ====================================================
+   Global Floating Embers — Full-Page Persistent Layer
+   ==================================================== */
+
+.global-embers {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Wrapper handles the cursor-push offset */
+.global-ember-wrapper {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  transition: transform 0.05s linear;
+}
+
+.global-ember {
+  position: absolute;
+  bottom: -10px;
+  background: var(--ignis-orange);
+  border-radius: 50%;
+  box-shadow:
+    0 0 6px rgba(255, 106, 0, 0.6),
+    0 0 14px rgba(255, 106, 0, 0.25);
+  animation: global-ember-rise linear infinite;
+  opacity: 0;
+}
+
+@keyframes global-ember-rise {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--ember-opacity, 0.4);
+  }
+  50% {
+    opacity: var(--ember-opacity, 0.4);
+    transform: translateY(-50vh) translateX(var(--ember-drift, 20px)) scale(0.8);
+  }
+  90% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(-105vh) translateX(calc(var(--ember-drift, 20px) * 1.5)) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .global-ember {
+    animation: none;
+    display: none;
+  }
+}
