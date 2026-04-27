@@ -61,14 +61,14 @@ const IgnisLayout = ({ children }) => {
           <a href="/" className="ignis-nav__logo">
             <span className="ignis-nav__logo-icon">🔥</span>
             <span className="ignis-fire-text" style={{ fontWeight: 800, fontSize: '1.3rem', fontFamily: 'var(--font-display)' }}>IGNIS</span>
-            <span style={{ fontWeight: 600, fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ignis-white)', marginLeft: '6px' }}>JWAALA</span>
+            <span className="ignis-nav__logo-text" style={{ fontWeight: 600, fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ignis-white)', marginLeft: '6px' }}>JWAALA</span>
           </a>
           <nav className="ignis-nav__links">
             {['EVENTS', 'BATTLES', 'FACTIONS', 'FORGE', 'ARENA'].map(l => (
               <a key={l} href={`#${l.toLowerCase()}`} className="ignis-nav__link">{l}</a>
             ))}
           </nav>
-          <button className="ignis-btn-primary" style={{ padding: '10px 24px', fontSize: '0.8rem' }}>
+          <button className="ignis-btn-primary ignis-nav__cta" style={{ padding: '10px 24px', fontSize: '0.8rem' }}>
             ENTER ARENA ⚡
           </button>
         </div>

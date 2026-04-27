@@ -856,6 +856,8 @@
   .hero__text { max-width: 100%; }
   .hero__stats { gap: var(--space-6); }
   .stat-counter { font-size: var(--text-2xl); }
+  
+  .hero__title { font-size: 3.5rem; }
 
   .modules-grid {
     grid-template-columns: 1fr;
@@ -879,7 +881,26 @@
 }
 
 @media (max-width: 480px) {
-  .hero__cta { flex-direction: column; }
-  .hero__stats { flex-direction: column; gap: var(--space-4); }
+  .hero__cta { flex-direction: column; width: 100%; }
+  .hero__cta > * { width: 100%; text-align: center; justify-content: center; }
+  
+  /* Make stats wrap horizontally instead of stacking vertically to save space */
+  .hero__stats { 
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    gap: var(--space-6); 
+    margin-top: var(--space-8);
+  }
   .hero__stat-divider { display: none; }
+  
+  /* Make title smaller */
+  .hero__title { font-size: 2.8rem; }
+  .hero__tagline { font-size: var(--text-md); }
+  .hero__description { font-size: var(--text-sm); }
+  
+  /* Push scroll indicator down or hide it if it overlaps */
+  .hero__scroll-indicator {
+    bottom: 20px;
+  }
 }
