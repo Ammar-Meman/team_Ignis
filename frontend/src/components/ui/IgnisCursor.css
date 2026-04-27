@@ -1,0 +1,151 @@
+/* ====================================================
+   IGNIS CURSOR — Fire-Themed Custom Cursor
+   ==================================================== */
+
+/* Hide the default cursor on the whole page */
+html, body {
+  cursor: none !important;
+}
+
+a, button, input, [role="button"],
+.ignis-card, .module-card, .faction-card,
+.ignis-btn-primary, .ignis-btn-outline {
+  cursor: none !important;
+}
+
+/* ── Dot (precise center) ── */
+.ignis-cursor__dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--ignis-orange);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  mix-blend-mode: screen;
+  box-shadow:
+    0 0 6px rgba(255, 106, 0, 0.8),
+    0 0 16px rgba(255, 106, 0, 0.4),
+    0 0 30px rgba(255, 60, 60, 0.2);
+  transition: width 0.25s ease, height 0.25s ease, background 0.25s ease;
+  will-change: transform;
+}
+
+.ignis-cursor__dot--hover {
+  width: 8px;
+  height: 8px;
+  background: var(--ignis-yellow, #FFD600);
+  box-shadow:
+    0 0 8px rgba(255, 214, 0, 0.9),
+    0 0 20px rgba(255, 214, 0, 0.5),
+    0 0 40px rgba(255, 106, 0, 0.3);
+}
+
+.ignis-cursor__dot--click {
+  width: 4px;
+  height: 4px;
+  background: #fff;
+}
+
+/* ── Ring (trailing outline) ── */
+.ignis-cursor__ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 106, 0, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: width 0.35s ease, height 0.35s ease, border-color 0.35s ease, opacity 0.35s ease;
+  will-change: transform;
+  animation: cursor-ring-pulse 2.5s ease-in-out infinite;
+}
+
+.ignis-cursor__ring--hover {
+  width: 50px;
+  height: 50px;
+  border-color: rgba(255, 214, 0, 0.6);
+  background: rgba(255, 106, 0, 0.05);
+}
+
+.ignis-cursor__ring--click {
+  width: 20px;
+  height: 20px;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes cursor-ring-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 106, 0, 0);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(255, 106, 0, 0.15);
+  }
+}
+
+/* ── Click Sparks ── */
+.ignis-cursor__sparks {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99997;
+  overflow: hidden;
+}
+
+.ignis-cursor__spark {
+  position: absolute;
+  width: var(--spark-size, 2px);
+  height: var(--spark-size, 2px);
+  background: var(--ignis-orange);
+  border-radius: 50%;
+  box-shadow:
+    0 0 4px rgba(255, 106, 0, 0.8),
+    0 0 8px rgba(255, 60, 60, 0.4);
+  animation: cursor-spark-fly 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes cursor-spark-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--spark-tx, 30px), var(--spark-ty, -30px)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .ignis-cursor__dot,
+  .ignis-cursor__ring,
+  .ignis-cursor__sparks {
+    display: none;
+  }
+  html, body,
+  a, button, input, [role="button"],
+  .ignis-card, .module-card, .faction-card,
+  .ignis-btn-primary, .ignis-btn-outline {
+    cursor: auto !important;
+  }
+}
+
+/* ── Hide on touch devices ── */
+@media (hover: none) and (pointer: coarse) {
+  .ignis-cursor__dot,
+  .ignis-cursor__ring,
+  .ignis-cursor__sparks {
+    display: none;
+  }
+  html, body,
+  a, button, input, [role="button"],
+  .ignis-card, .module-card, .faction-card,
+  .ignis-btn-primary, .ignis-btn-outline {
+    cursor: auto !important;
+  }
+}

@@ -14,6 +14,8 @@
   --ignis-red:       #FF3C3C;
   --ignis-red-dk:    #CC2E2E;
   --ignis-amber:     #FF8C00;
+  --ignis-yellow:    #FFD600;
+  --ignis-crimson:   #DC143C;
 
   /* ── Faction Colors ── */
   --faction-ignis:   #FF6A00;
@@ -26,6 +28,7 @@
   --ignis-glow-soft:   rgba(255, 106, 0, 0.12);
   --ignis-glow-red:    rgba(255, 60, 60, 0.3);
   --ignis-ember-light: rgba(255, 140, 0, 0.15);
+  --ignis-glow-intense: rgba(255, 106, 0, 0.6);
 
   /* ── Text Scale ── */
   --ignis-white:     #F5F0EA;
@@ -39,6 +42,8 @@
   --gradient-ember:   linear-gradient(180deg, var(--ignis-orange) 0%, transparent 100%);
   --gradient-dark:    linear-gradient(180deg, var(--ignis-black) 0%, var(--ignis-deep) 100%);
   --gradient-glass:   linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+  --gradient-inferno: linear-gradient(180deg, rgba(255,60,60,0.08) 0%, rgba(255,106,0,0.04) 30%, transparent 60%);
+  --gradient-lava:    linear-gradient(180deg, transparent 0%, rgba(255,60,60,0.06) 50%, rgba(255,106,0,0.1) 100%);
 
   /* ── Fonts ── */
   --font-display: 'Rajdhani', 'Barlow Condensed', sans-serif;
@@ -86,6 +91,7 @@
   --shadow-glow:    0 0 24px rgba(255, 106, 0, 0.4);
   --shadow-glow-sm: 0 0 12px rgba(255, 106, 0, 0.25);
   --shadow-glow-xl: 0 0 64px rgba(255, 106, 0, 0.35);
+  --shadow-fire:    0 0 40px rgba(255, 60, 60, 0.3), 0 0 80px rgba(255, 106, 0, 0.15);
 
   /* ── Transitions ── */
   --ease-fast:   0.15s ease;
@@ -190,10 +196,18 @@ img {
 }
 
 .ignis-fire-text {
-  background: linear-gradient(135deg, var(--ignis-orange) 0%, var(--ignis-red) 60%, var(--ignis-amber) 100%);
+  background: linear-gradient(135deg, var(--ignis-yellow) 0%, var(--ignis-orange) 30%, var(--ignis-red) 70%, var(--ignis-crimson) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  background-size: 200% 200%;
+  animation: fire-text-shift 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 106, 0, 0.4));
+}
+
+@keyframes fire-text-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 /* ====================================================
@@ -211,6 +225,30 @@ img {
   position: relative;
 }
 
+/* ── PERSISTENT FIRE ATMOSPHERE on every section ── */
+.ignis-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255, 60, 60, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(255, 106, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(255, 140, 0, 0.03) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+  animation: section-fire-breathe 8s ease-in-out infinite;
+}
+
+.ignis-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes section-fire-breathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 .ignis-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -224,10 +262,11 @@ img {
 
 .ignis-divider {
   height: 2px;
-  background: linear-gradient(90deg, var(--ignis-orange), transparent 80%);
+  background: linear-gradient(90deg, var(--ignis-orange), var(--ignis-red) 50%, transparent 80%);
   border: none;
   margin: var(--space-6) 0;
   max-width: 120px;
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.3);
 }
 
 /* ====================================================
@@ -235,26 +274,91 @@ img {
    ==================================================== */
 
 .ignis-panel {
-  background: rgba(22, 22, 22, 0.85);
-  border: 1px solid var(--ignis-border);
+  background: rgba(22, 22, 22, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
-  backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    var(--shadow-md),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.2),
+    0 0 0 0.5px rgba(255, 106, 0, 0.05);
   padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow var(--ease-base);
+}
+
+.ignis-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  pointer-events: none;
+}
+
+.ignis-panel:hover {
+  box-shadow:
+    var(--shadow-md),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 30px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(255, 106, 0, 0.08);
 }
 
 .ignis-card {
-  background: var(--ignis-panel);
-  border: 1px solid var(--ignis-border);
+  background: rgba(26, 26, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   padding: var(--space-6);
-  transition: border-color var(--ease-base), box-shadow var(--ease-base), transform var(--ease-base);
+  transition: all var(--ease-base);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 
+    var(--shadow-sm),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.ignis-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ignis-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 106, 0, 0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
 .ignis-card:hover {
   border-color: var(--ignis-orange);
-  box-shadow: var(--shadow-glow-sm);
+  box-shadow:
+    var(--shadow-glow-sm),
+    inset 0 1px 0 rgba(255, 106, 0, 0.2),
+    inset 0 0 30px rgba(255, 106, 0, 0.04);
   transform: translateY(-4px);
+}
+
+.ignis-card:hover::after {
+  opacity: 1;
 }
 
 .ignis-badge {
@@ -292,11 +396,26 @@ img {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.ignis-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,214,0,0.3) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .ignis-btn-primary:hover {
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow-glow), 0 0 60px rgba(255, 60, 60, 0.2);
   transform: translateY(-2px);
+}
+
+.ignis-btn-primary:hover::before {
+  opacity: 1;
 }
 
 .ignis-btn-primary:active {
@@ -314,7 +433,7 @@ img {
   text-transform: uppercase;
   padding: 13px 32px;
   border-radius: var(--radius-sm);
-  transition: background var(--ease-base), box-shadow var(--ease-base), transform var(--ease-fast);
+  transition: background var(--ease-base), box-shadow var(--ease-base), transform var(--ease-fast), border-color var(--ease-base);
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -322,8 +441,9 @@ img {
 
 .ignis-btn-outline:hover {
   background: var(--ignis-glow-soft);
-  box-shadow: var(--shadow-glow-sm);
+  box-shadow: var(--shadow-glow-sm), inset 0 0 20px rgba(255, 106, 0, 0.08);
   transform: translateY(-2px);
+  border-color: var(--ignis-amber);
 }
 
 /* ====================================================
@@ -380,6 +500,37 @@ img {
 @keyframes ignis-scan {
   from { transform: translateY(-100%); }
   to   { transform: translateY(100vh); }
+}
+
+/* ── NEW aggressive fire animations ── */
+@keyframes spark-fly {
+  0% { transform: translateY(0) translateX(0) scale(0); opacity: 0; }
+  5% { opacity: 1; transform: scale(1); }
+  30% { opacity: 0.9; }
+  100% { transform: translateY(-120vh) translateX(var(--spark-drift, 60px)) scale(0) rotate(720deg); opacity: 0; }
+}
+
+@keyframes fire-flicker {
+  0%, 100% { opacity: 0.7; transform: scaleY(1); }
+  25% { opacity: 1; transform: scaleY(1.02); }
+  50% { opacity: 0.8; transform: scaleY(0.98); }
+  75% { opacity: 0.95; transform: scaleY(1.01); }
+}
+
+@keyframes heat-wave {
+  0%, 100% { transform: translateX(0) skewX(0deg); }
+  25% { transform: translateX(2px) skewX(0.3deg); }
+  75% { transform: translateX(-2px) skewX(-0.3deg); }
+}
+
+@keyframes border-fire-crawl {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes rage-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 60, 60, 0.15), 0 0 60px rgba(255, 106, 0, 0.08); }
+  50% { box-shadow: 0 0 40px rgba(255, 60, 60, 0.25), 0 0 100px rgba(255, 106, 0, 0.15); }
 }
 
 .ignis-ember      { animation: ember-pulse 2.5s ease-in-out infinite; }

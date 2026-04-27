@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import GlobalEmbers from '../ui/GlobalEmbers'
+import IgnisCursor from '../ui/IgnisCursor'
 import './IgnisLayout.css'
 
 const IgnisLayout = ({ children }) => {
   const [scrolled, setScrolled] = useState(false)
+  const glowRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -10,8 +13,49 @@ const IgnisLayout = ({ children }) => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  /* ── Global cursor-following fire glow ── */
+  useEffect(() => {
+    const glowEl = glowRef.current
+    if (!glowEl) return
+
+    const handleMove = (e) => {
+      const xPercent = (e.clientX / window.innerWidth) * 100
+      const yPercent = (e.clientY / window.innerHeight) * 100
+      glowEl.style.background = `radial-gradient(ellipse 600px 600px at ${xPercent}% ${yPercent}%, rgba(255,106,0,0.12) 0%, rgba(255,60,60,0.04) 35%, transparent 70%)`
+      glowEl.style.opacity = '1'
+    }
+
+    const handleLeave = () => {
+      glowEl.style.opacity = '0'
+    }
+
+    window.addEventListener('mousemove', handleMove, { passive: true })
+    window.addEventListener('mouseleave', handleLeave)
+    return () => {
+      window.removeEventListener('mousemove', handleMove)
+      window.removeEventListener('mouseleave', handleLeave)
+    }
+  }, [])
+
   return (
     <div className="ignis-app">
+      {/* ── Custom Fire Cursor ── */}
+      <IgnisCursor />
+
+      {/* ── Global Atmospheric Background ── */}
+      <div className="ignis-atmosphere" aria-hidden="true">
+        <div className="ignis-atmosphere__gradient" />
+        <div className="ignis-atmosphere__gradient ignis-atmosphere__gradient--secondary" />
+        <div className="ignis-atmosphere__noise" />
+      </div>
+
+      {/* ── Global Cursor-Following Fire Glow ── */}
+      <div ref={glowRef} className="ignis-cursor-glow" aria-hidden="true" />
+
+      {/* ── Global Floating Embers (with cursor interaction) ── */}
+      <GlobalEmbers count={15} />
+
+      {/* ── Navigation ── */}
       <header className={`ignis-nav ${scrolled ? 'ignis-nav--scrolled' : ''}`}>
         <div className="ignis-nav__inner">
           <a href="/" className="ignis-nav__logo">
@@ -30,8 +74,10 @@ const IgnisLayout = ({ children }) => {
         </div>
       </header>
 
+      {/* ── Main Content ── */}
       <main>{children}</main>
 
+      {/* ── Footer ── */}
       <footer className="ignis-footer">
         <div className="ignis-container ignis-footer__inner">
           <div>

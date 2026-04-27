@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import './Home.css'
 
 /* ── Utility: Animated Counter ── */
@@ -66,6 +66,115 @@ const RevealSection = ({ children, className = '', animation = 'fade-up', delay 
   )
 }
 
+/* ── Reusable: Floating Ember Particles with cursor interaction ── */
+const SECTION_INTERACTION_RADIUS = 140
+const SECTION_PUSH_STRENGTH = 60
+
+const SectionEmbers = ({ count = 15 }) => {
+  const embers = useMemo(() =>
+    Array.from({ length: count }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 8}s`,
+      duration: `${6 + Math.random() * 6}s`,
+    })),
+    [count]
+  )
+
+  const wrappersRef = useRef([])
+  const mouseRef = useRef({ x: -9999, y: -9999 })
+  const pushRef = useRef([])
+  const rafRef = useRef(null)
+
+  // Init push offsets
+  useEffect(() => {
+    pushRef.current = Array.from({ length: count }, () => ({ x: 0, y: 0 }))
+  }, [count])
+
+  // Mouse tracking
+  useEffect(() => {
+    const handleMove = (e) => {
+      mouseRef.current.x = e.clientX
+      mouseRef.current.y = e.clientY
+    }
+    const handleLeave = () => {
+      mouseRef.current.x = -9999
+      mouseRef.current.y = -9999
+    }
+    window.addEventListener('mousemove', handleMove, { passive: true })
+    window.addEventListener('mouseleave', handleLeave)
+    return () => {
+      window.removeEventListener('mousemove', handleMove)
+      window.removeEventListener('mouseleave', handleLeave)
+    }
+  }, [])
+
+  // Animation loop — push embers away from cursor
+  useEffect(() => {
+    const animate = () => {
+      const mx = mouseRef.current.x
+      const my = mouseRef.current.y
+
+      for (let i = 0; i < wrappersRef.current.length; i++) {
+        const wrapper = wrappersRef.current[i]
+        if (!wrapper) continue
+        const ember = wrapper.firstChild
+        if (!ember) continue
+
+        const rect = ember.getBoundingClientRect()
+        const ex = rect.left + rect.width / 2
+        const ey = rect.top + rect.height / 2
+        const dx = ex - mx
+        const dy = ey - my
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        const push = pushRef.current[i]
+
+        if (dist < SECTION_INTERACTION_RADIUS && dist > 0) {
+          const force = (1 - dist / SECTION_INTERACTION_RADIUS) * SECTION_PUSH_STRENGTH
+          const angle = Math.atan2(dy, dx)
+          push.x += (Math.cos(angle) * force - push.x) * 0.15
+          push.y += (Math.sin(angle) * force - push.y) * 0.15
+        } else {
+          push.x *= 0.92
+          push.y *= 0.92
+          if (Math.abs(push.x) < 0.1 && Math.abs(push.y) < 0.1) {
+            push.x = 0
+            push.y = 0
+          }
+        }
+
+        wrapper.style.transform = `translate(${push.x}px, ${push.y}px)`
+      }
+
+      rafRef.current = requestAnimationFrame(animate)
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [])
+
+  return (
+    <div className="section-embers" aria-hidden="true">
+      {embers.map((e, i) => (
+        <div
+          key={e.id}
+          className="ember-wrapper"
+          ref={(el) => (wrappersRef.current[i] = el)}
+        >
+          <div
+            className="ember-particle"
+            style={{
+              left: e.left,
+              animationDelay: e.delay,
+              animationDuration: e.duration,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ────────────────────────────────────────────────────
    HOME PAGE
    ──────────────────────────────────────────────────── */
@@ -100,19 +209,7 @@ const Home = () => {
         <div className="hero__glow-static" />
 
         {/* Floating ember particles */}
-        <div className="hero__embers">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className="ember-particle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 8}s`,
-                animationDuration: `${6 + Math.random() * 6}s`,
-              }}
-            />
-          ))}
-        </div>
+        <SectionEmbers count={15} />
 
         <div className="ignis-container hero__content">
           <div className="hero__text">
@@ -174,6 +271,7 @@ const Home = () => {
           SECTION 2: TODAY'S ACTIVE MODULES
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section modules-section" id="events">
+        <SectionEmbers count={15} />
         <div className="ignis-container">
           <RevealSection animation="fade-up">
             <div className="section-header section-header--center">
@@ -185,14 +283,13 @@ const Home = () => {
 
           <div className="modules-grid">
             {[
-              { id: '01', title: 'LIVE POLL ARENA', status: 'LIVE', statusColor: '#FF3C3C', desc: 'Cast your vote in the most heated battles of the day.', icon: '🗳️' },
-              { id: '02', title: 'IGNITE MODE', status: 'UPCOMING', statusColor: '#FF6A00', desc: 'A rapid-fire round of polls. Quick answers, big impact.', icon: '⚡' },
-              { id: '03', title: 'TRENDING WAR', status: 'ACTIVE', statusColor: '#2D9F2D', desc: 'Jump into the most debated topics right now.', icon: '🔥' },
+              { title: 'LIVE POLL ARENA', status: 'LIVE', statusColor: '#FF3C3C', desc: 'Cast your vote in the most heated battles of the day.', icon: '🗳️' },
+              { title: 'IGNITE MODE', status: 'UPCOMING', statusColor: '#FF6A00', desc: 'A rapid-fire round of polls. Quick answers, big impact.', icon: '⚡' },
+              { title: 'TRENDING WAR', status: 'ACTIVE', statusColor: '#2D9F2D', desc: 'Jump into the most debated topics right now.', icon: '🔥' },
             ].map((module, i) => (
-              <RevealSection key={module.id} animation="scale-in" delay={i * 0.15}>
-                <div className="module-card ignis-card" id={`module-${module.id}`}>
+              <RevealSection key={i} animation="scale-in" delay={i * 0.15}>
+                <div className="module-card ignis-card" id={`module-${i + 1}`}>
                   <div className="module-card__header">
-                    <span className="ignis-mono">{module.id} //</span>
                     <span className="module-status" style={{ color: module.statusColor, borderColor: module.statusColor }}>
                       ● {module.status}
                     </span>
@@ -214,6 +311,7 @@ const Home = () => {
           SECTION 3: BATTLE STATION (POLL)
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section battle-section" id="battles">
+        <SectionEmbers count={15} />
         <div className="ignis-container">
           <div className="battle-grid">
             <RevealSection animation="slide-left" className="battle-text">
@@ -267,6 +365,7 @@ const Home = () => {
           SECTION 4: CREATE POLL
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section create-section" id="forge">
+        <SectionEmbers count={15} />
         <div className="ignis-container">
           <div className="create-grid">
             <RevealSection animation="scale-in" className="create-visual">
@@ -302,6 +401,7 @@ const Home = () => {
           SECTION 5: ARENA COMMS (CHAT)
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section chat-section" id="arena">
+        <SectionEmbers count={15} />
         <div className="ignis-container">
           <div className="chat-grid">
             <RevealSection animation="slide-left" className="chat-text">
@@ -355,6 +455,7 @@ const Home = () => {
           SECTION 6: GLOBAL STANDINGS
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section standings-section" id="factions">
+        <SectionEmbers count={15} />
         <div className="ignis-container">
           <RevealSection animation="fade-up">
             <div className="section-header section-header--center">
@@ -402,6 +503,7 @@ const Home = () => {
           SECTION 7: COMMUNITY
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section community-section">
+        <SectionEmbers count={15} />
         <div className="ignis-container">
           <div className="community-grid">
             <RevealSection animation="slide-left" className="community-text">
