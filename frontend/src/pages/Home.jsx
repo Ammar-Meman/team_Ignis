@@ -427,7 +427,7 @@ const Home = () => {
                 </div>
                 <div className="chat-window__messages">
                   {[
-                    { user: 'Aether_7', faction: 'ventus', color: '#9B5DE5', msg: 'AI is clearly dominating this poll 🔥', time: '2m ago' },
+                    { user: 'Aether_7', faction: 'aero', color: '#9B5DE5', msg: 'AI is clearly dominating this poll 🔥', time: '2m ago' },
                     { user: 'BlazeKing', faction: 'ignis', color: '#FF6A00', msg: 'Quantum Computing will surprise everyone. Mark my words.', time: '1m ago' },
                     { user: 'TerraForce', faction: 'terra', color: '#2D9F2D', msg: 'Biotech is underrated. Look at the breakthroughs.', time: '45s ago' },
                     { user: 'WaveRider', faction: 'aqua', color: '#00B4D8', msg: 'Web3 had its chance. Next.', time: '12s ago' },
@@ -477,7 +477,7 @@ const Home = () => {
                   { name: 'IGNIS', color: '#FF6A00', score: 85, icon: '🔥' },
                   { name: 'AQUA', color: '#00B4D8', score: 72, icon: '🌊' },
                   { name: 'TERRA', color: '#2D9F2D', score: 64, icon: '🌱' },
-                  { name: 'VENTUS', color: '#9B5DE5', score: 58, icon: '🌪️' },
+                  { name: 'AERO', color: '#9B5DE5', score: 58, icon: '🌪️' },
                 ].map((faction, i) => (
                   <div key={i} className="standings-bar">
                     <div className="standings-bar__info">
@@ -528,7 +528,7 @@ const Home = () => {
                   { name: 'IGNIS', icon: '🔥', color: '#FF6A00', desc: 'The fire within. Bold, fierce, dominant.' },
                   { name: 'AQUA', icon: '🌊', color: '#00B4D8', desc: 'The calm tide. Strategic, adaptive, fluid.' },
                   { name: 'TERRA', icon: '🌱', color: '#2D9F2D', desc: 'The grounded force. Resilient, steady, powerful.' },
-                  { name: 'VENTUS', icon: '🌪️', color: '#9B5DE5', desc: 'The swift wind. Agile, unpredictable, creative.' },
+                  { name: 'AERO', icon: '🌪️', color: '#9B5DE5', desc: 'The swift wind. Agile, unpredictable, creative.' },
                 ].map((faction, i) => (
                   <RevealSection key={i} animation="scale-in" delay={0.1 + i * 0.12}>
                     <div
