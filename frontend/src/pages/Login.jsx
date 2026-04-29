@@ -1,9 +1,12 @@
 import React, { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './Login.css'
 
 const Login = () => {
+  const navigate = useNavigate()
   const [grNo, setGrNo] = useState('')
   const [dob, setDob] = useState('')
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   /* Generate random ember particles once */
   const embers = useMemo(() =>
@@ -19,7 +22,13 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('Login attempt:', { grNo, dob })
+    setIsLoggingIn(true)
+    
+    // Simulate API delay
+    setTimeout(() => {
+      console.log('Login successful:', { grNo, dob })
+      navigate('/polls')
+    }, 1500)
   }
 
   return (
@@ -95,9 +104,9 @@ const Login = () => {
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="login-submit" id="login-submit-btn">
+          <button type="submit" className="login-submit" id="login-submit-btn" disabled={isLoggingIn}>
             <span className="login-submit__text">
-              IGNITE SESSION 🔥
+              {isLoggingIn ? 'IGNITING SESSION...' : 'IGNITE SESSION 🔥'}
             </span>
           </button>
         </form>
