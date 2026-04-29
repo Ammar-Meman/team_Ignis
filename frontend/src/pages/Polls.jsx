@@ -10,7 +10,7 @@ const INITIAL_POLLS = [
       { id: 'a', text: "House Ignis (Fire)", votes: 124 },
       { id: 'b', text: "Aqua Legion (Water)", votes: 89 },
       { id: 'c', text: "Terra Alliance (Earth)", votes: 76 },
-      { id: 'd', text: "Ventus Syndicate (Air)", votes: 45 }
+      { id: 'd', text: "Aero Syndicate (Air)", votes: 45 }
     ],
     totalVotes: 334,
     multiple: true,
