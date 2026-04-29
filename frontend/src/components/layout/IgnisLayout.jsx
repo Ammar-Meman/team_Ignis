@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import GlobalEmbers from '../ui/GlobalEmbers'
 import IgnisCursor from '../ui/IgnisCursor'
 import './IgnisLayout.css'
@@ -68,9 +69,9 @@ const IgnisLayout = ({ children }) => {
               <a key={l} href={`#${l.toLowerCase()}`} className="ignis-nav__link">{l}</a>
             ))}
           </nav>
-          <button className="ignis-btn-primary ignis-nav__cta" style={{ padding: '10px 24px', fontSize: '0.8rem' }}>
-            ENTER ARENA ⚡
-          </button>
+          <Link to="/login" className="ignis-btn-primary ignis-nav__cta" style={{ padding: '10px 24px', fontSize: '0.8rem', textDecoration: 'none' }}>
+            IGNITE 🔥
+          </Link>
         </div>
       </header>
 
