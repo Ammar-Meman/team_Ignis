@@ -1,0 +1,120 @@
+/* ====================================================
+   POINTS PAGE — IGNIS JWAALA
+   ==================================================== */
+
+.points-page {
+  padding-top: 160px !important;
+  padding-bottom: var(--space-24) !important;
+  min-height: 80vh;
+}
+
+.points-dashboard {
+  padding: var(--space-8);
+  animation: ignis-fade-up 0.6s var(--ease-slow) both;
+}
+
+.points-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--ignis-border);
+}
+
+.points-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+}
+
+.points-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--ignis-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6);
+  transition: all var(--ease-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.points-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--card-accent);
+  opacity: 0.5;
+  transition: opacity var(--ease-base);
+}
+
+.points-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.points-card:hover::before {
+  opacity: 1;
+}
+
+.points-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.points-card__icon {
+  font-size: 1.5rem;
+}
+
+.points-card__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: 0.05em;
+}
+
+.points-card__control {
+  margin-bottom: var(--space-5);
+}
+
+.points-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.points-input {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding-right: var(--space-10);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.points-unit {
+  position: absolute;
+  right: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ignis-dim);
+}
+
+.points-preview {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .points-dashboard__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}

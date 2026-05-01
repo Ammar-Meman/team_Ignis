@@ -65,9 +65,11 @@ const IgnisLayout = ({ children }) => {
             <span className="ignis-nav__logo-text" style={{ fontWeight: 600, fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ignis-white)', marginLeft: '6px' }}>JWAALA</span>
           </a>
           <nav className="ignis-nav__links">
-            {['EVENTS', 'BATTLES', 'FACTIONS', 'POLLS', 'ARENA'].map(l => (
+            {['EVENTS', 'BATTLES', 'FACTIONS', 'POLLS', 'ARENA POINTS'].map(l => (
               l === 'POLLS' ? (
                 <Link key={l} to="/polls" className="ignis-nav__link">{l}</Link>
+              ) : l === 'ARENA POINTS' ? (
+                <Link key={l} to="/points" className="ignis-nav__link">{l}</Link>
               ) : (
                 <a key={l} href={`#${l.toLowerCase()}`} className="ignis-nav__link">{l}</a>
               )
