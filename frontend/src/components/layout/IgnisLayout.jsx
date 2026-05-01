@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import GlobalEmbers from '../ui/GlobalEmbers'
 import IgnisCursor from '../ui/IgnisCursor'
+import { useAuth } from '../../context/AuthContext'
 import './IgnisLayout.css'
 
 const IgnisLayout = ({ children }) => {
   const [scrolled, setScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { user, logout } = useAuth()
   const glowRef = useRef(null)
 
   useEffect(() => {
@@ -91,13 +93,33 @@ const IgnisLayout = ({ children }) => {
                 <a key={l} href={`#${l.toLowerCase()}`} className="ignis-nav__link" onClick={() => setIsMobileMenuOpen(false)}>{l}</a>
               )
             ))}
-            <Link to="/login" className="ignis-btn-primary ignis-nav__cta ignis-nav__cta--mobile" onClick={() => setIsMobileMenuOpen(false)}>
+            
+            {user ? (
+              <div className="ignis-nav__user-profile ignis-nav__user-profile--mobile">
+                <span className="ignis-nav__user-name">{user.name}</span>
+                <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="ignis-nav__logout-btn">
+                  LOGOUT
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="ignis-btn-primary ignis-nav__cta ignis-nav__cta--mobile" onClick={() => setIsMobileMenuOpen(false)}>
+                IGNITE 🔥
+              </Link>
+            )}
+          </nav>
+          
+          {user ? (
+            <div className="ignis-nav__user-profile ignis-nav__user-profile--desktop">
+              <span className="ignis-nav__user-name">{user.name}</span>
+              <button onClick={logout} className="ignis-nav__logout-btn">
+                LOGOUT
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="ignis-btn-primary ignis-nav__cta ignis-nav__cta--desktop" style={{ padding: '10px 24px', fontSize: '0.8rem', textDecoration: 'none' }}>
               IGNITE 🔥
             </Link>
-          </nav>
-          <Link to="/login" className="ignis-btn-primary ignis-nav__cta ignis-nav__cta--desktop" style={{ padding: '10px 24px', fontSize: '0.8rem', textDecoration: 'none' }}>
-            IGNITE 🔥
-          </Link>
+          )}
         </div>
       </header>
 

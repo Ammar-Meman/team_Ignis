@@ -229,6 +229,47 @@
 }
 
 /* ====================================================
+   USER PROFILE NAV
+   ==================================================== */
+.ignis-nav__user-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ignis-nav__user-name {
+  color: var(--ignis-white);
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.ignis-nav__logout-btn {
+  background: transparent;
+  color: var(--ignis-red);
+  border: 1px solid var(--ignis-red);
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ignis-nav__logout-btn:hover {
+  background: rgba(255, 60, 60, 0.1);
+  box-shadow: 0 0 10px rgba(255, 60, 60, 0.2);
+}
+
+.ignis-nav__user-profile--mobile {
+  display: none !important;
+}
+
+/* ====================================================
    Responsive
    ==================================================== */
 @media (max-width: 768px) {
@@ -271,6 +312,26 @@
     margin-top: var(--space-2);
     width: 100%;
     justify-content: center;
+  }
+
+  .ignis-nav__user-profile--desktop {
+    display: none !important;
+  }
+
+  .ignis-nav__user-profile--mobile {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+  }
+
+  .ignis-nav__user-profile--mobile .ignis-nav__logout-btn {
+    width: 100%;
+    text-align: center;
   }
 
   .ignis-footer__inner {

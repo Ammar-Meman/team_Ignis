@@ -8,12 +8,19 @@ const path = require('path');
 // @access  Public
 const loginUser = async (req, res) => {
   try {
-    const { grNo, password } = req.body;
+    const { grNo, password, role } = req.body;
 
     // Check for user
     const user = await User.findOne({ grNo }).select('+password');
 
+    // Verify user exists, password matches, AND requested role matches their actual database role
     if (user && (await user.matchPassword(password))) {
+      // If the user tries to log in as a role they do not have, reject them
+      if (role && user.role !== role) {
+        let actualRoleName = user.role === 'grandmaster' ? 'Grand Master' : 'an Ember';
+        return res.status(401).json({ message: `Access denied. You are registered as ${actualRoleName}.` });
+      }
+
       res.json({
         _id: user._id,
         grNo: user.grNo,
@@ -46,17 +53,11 @@ const seedUsers = async (req, res) => {
     const formattedUsers = usersData.map(user => ({
       grNo: user.grNo,
       name: user.name,
-      password: '123456', // Fixed password for all Embers as requested
-      role: 'ember'
+      // Passwords are now securely pulled from the .env file instead of being visible in code
+      password: user.grNo === '108726' ? process.env.GRANDMASTER_PASSWORD : process.env.DEFAULT_EMBER_PASSWORD,
+      // Make Ammar Meman (108726) the Grand Master, everyone else is an ember
+      role: user.grNo === '108726' ? 'grandmaster' : 'ember'
     }));
-
-    // Add the Grand Master (Admin) to the list
-    formattedUsers.push({
-      grNo: 'ADMIN01',
-      name: 'Grand Master',
-      password: '123456', // Or 'adminpassword123', keeping it 123456 for simplicity as requested
-      role: 'grandmaster'
-    });
 
     const createdUsers = await User.create(formattedUsers);
 
