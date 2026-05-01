@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /leader-panel
+Disallow: /api/
+
+Sitemap: https://team-ignis.vercel.app/sitemap.xml

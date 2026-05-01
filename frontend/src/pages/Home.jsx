@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import './Home.css'
 
 /* ── Utility: Animated Counter ── */
@@ -218,6 +219,10 @@ const Home = ({ factionScores }) => {
 
   return (
     <div className="home">
+      <Helmet>
+        <title>IGNIS JWAALA — The Arena Awaits</title>
+        <meta name="description" content="Enter the Vanguard Arena. Participate in live discussions, view real-time polls, and assert your faction's dominance." />
+      </Helmet>
 
       {/* ═══════════════════════════════════════════════
           SECTION 1: HERO

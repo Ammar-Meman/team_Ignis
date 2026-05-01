@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Helmet } from 'react-helmet-async'
 import './LeaderPanel.css'
 
 const STORAGE_KEY = 'ignis_leader_games'
@@ -148,6 +149,10 @@ const LeaderPanel = () => {
 
   return (
     <div className="ignis-container leader-page">
+      <Helmet>
+        <title>Leader Panel — IGNIS JWAALA</title>
+        <meta name="description" content="Exclusive dashboard for the Vanguard leaders to oversee the arena metrics." />
+      </Helmet>
       <div className="section-header">
         <h1 className="ignis-title"><span className="ignis-fire-text">LEADER</span> PANEL</h1>
         <p className="section-subtitle">Command the Arena. Select and rank the active games.</p>

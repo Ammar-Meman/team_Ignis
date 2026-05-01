@@ -1,4 +1,5 @@
 import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import './Points.css'
 
 const Points = ({ factionScores, setFactionScores }) => {
@@ -15,6 +16,10 @@ const Points = ({ factionScores, setFactionScores }) => {
 
   return (
     <div className="ignis-container points-page">
+      <Helmet>
+        <title>Arena Points — IGNIS JWAALA</title>
+        <meta name="description" content="Track live faction standings and observe the balance of power across Ignis, Aqua, Terra, and Aero." />
+      </Helmet>
       <div className="section-header">
         <h1 className="ignis-title"><span className="ignis-fire-text">ARENA</span> POINTS</h1>
         <p className="section-subtitle">Manage faction dominance. Updates sync instantly to the global standings.</p>
