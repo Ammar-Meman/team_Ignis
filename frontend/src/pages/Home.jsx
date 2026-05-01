@@ -178,7 +178,7 @@ const SectionEmbers = ({ count = 15 }) => {
 /* ────────────────────────────────────────────────────
    HOME PAGE
    ──────────────────────────────────────────────────── */
-const Home = () => {
+const Home = ({ factionScores }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
@@ -473,12 +473,12 @@ const Home = () => {
               </div>
 
               <div className="standings-bars">
-                {[
+                {(factionScores || [
                   { name: 'IGNIS', color: '#FF6A00', score: 85, icon: '🔥' },
                   { name: 'AQUA', color: '#00B4D8', score: 72, icon: '🌊' },
                   { name: 'TERRA', color: '#2D9F2D', score: 64, icon: '🌱' },
                   { name: 'AERO', color: '#9B5DE5', score: 58, icon: '🌪️' },
-                ].map((faction, i) => (
+                ]).map((faction, i) => (
                   <div key={i} className="standings-bar">
                     <div className="standings-bar__info">
                       <span className="standings-bar__icon">{faction.icon}</span>

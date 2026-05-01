@@ -132,6 +132,11 @@ const Polls = () => {
     }))
   }
 
+  // Handle Poll Deletion
+  const handleDeletePoll = (pollId) => {
+    setPolls(prevPolls => prevPolls.filter(poll => poll.id !== pollId))
+  }
+
   return (
     <div className="ignis-container polls-page">
       <div className="section-header">
@@ -253,6 +258,13 @@ const Polls = () => {
               <div className="poll-card__footer">
                 <span className="poll-total-votes">{poll.totalVotes} total votes recorded</span>
                 <div className="hero__cta">
+                  <button 
+                    className="ignis-btn-outline" 
+                    style={{ padding: '8px 16px', fontSize: '0.7rem', borderColor: 'var(--ignis-red)', color: 'var(--ignis-red)' }}
+                    onClick={() => handleDeletePoll(poll.id)}
+                  >
+                    DELETE
+                  </button>
                   <button className="ignis-btn-outline" style={{ padding: '8px 16px', fontSize: '0.7rem' }}>SHARE</button>
                   <button className="ignis-btn-outline" style={{ padding: '8px 16px', fontSize: '0.7rem' }}>REPORT</button>
                 </div>
