@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
 import './Polls.css'
 
 const INITIAL_POLLS = [
@@ -188,6 +189,10 @@ const Polls = () => {
 
   return (
     <div className="ignis-container polls-page">
+      <Helmet>
+        <title>Grand Master Forge — IGNIS JWAALA</title>
+        <meta name="description" content="Vote on critical community decisions and forge the future of the Arena." />
+      </Helmet>
       <div className="section-header">
         <h1 className="ignis-title"><span className="ignis-fire-text">IGNIS</span> POLLS</h1>
         <p className="section-subtitle">The voice of the community shapes the future of the Arena.</p>

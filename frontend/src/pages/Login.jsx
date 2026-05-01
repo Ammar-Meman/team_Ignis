@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useAuth } from '../context/AuthContext'
 import './Login.css'
 
@@ -42,6 +43,10 @@ const Login = () => {
 
   return (
     <div className="login-page">
+      <Helmet>
+        <title>Login — IGNIS JWAALA</title>
+        <meta name="description" content="Secure access portal for Embers and Grand Masters. Ignite your session and enter the Arena." />
+      </Helmet>
       {/* ── Atmospheric Background ── */}
       <div className="login-page__bg" aria-hidden="true">
         <div className="login-page__bg-orb login-page__bg-orb--1" />
