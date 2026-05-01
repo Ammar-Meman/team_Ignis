@@ -5,7 +5,7 @@ import './Login.css'
 const Login = () => {
   const navigate = useNavigate()
   const [grNo, setGrNo] = useState('')
-  const [dob, setDob] = useState('')
+  const [password, setPassword] = useState('')
   const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   /* Generate random ember particles once */
@@ -26,7 +26,7 @@ const Login = () => {
     
     // Simulate API delay
     setTimeout(() => {
-      console.log('Login successful:', { grNo, dob })
+      console.log('Login successful:', { grNo, password })
       navigate('/polls')
     }, 1500)
   }
@@ -87,20 +87,21 @@ const Login = () => {
             <span className="login-field__icon">⚡</span>
           </div>
 
-          {/* DOB Field */}
+          {/* Password Field */}
           <div className="login-field">
-            <label className="login-field__label" htmlFor="login-dob">
-              Date of Birth
+            <label className="login-field__label" htmlFor="login-password">
+              Password
             </label>
             <input
-              id="login-dob"
+              id="login-password"
               className="login-field__input"
-              type="date"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <span className="login-field__icon">📅</span>
+            <span className="login-field__icon">🔒</span>
           </div>
 
           {/* Submit Button */}
