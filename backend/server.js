@@ -14,6 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 // Database Connection
 connectDB();
 
+// Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+
 // Basic Route
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'Ignis Arena API is running' });
