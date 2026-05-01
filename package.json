@@ -1,0 +1,23 @@
+{
+  "name": "team_ignis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ammar-Meman/team_Ignis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ammar-Meman/team_Ignis/issues"
+  },
+  "homepage": "https://github.com/Ammar-Meman/team_Ignis#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
