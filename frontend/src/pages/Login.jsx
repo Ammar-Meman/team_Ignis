@@ -29,7 +29,8 @@ const Login = () => {
     setIsLoggingIn(true)
     setErrorMsg('')
     
-    const result = await login(grNo, password)
+    const dbRole = role === 'admin' ? 'grandmaster' : 'ember'
+    const result = await login(grNo, password, dbRole)
     
     setIsLoggingIn(false)
     if (result.success) {
