@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Polls from './pages/Polls'
 import Points from './pages/Points'
+import LeaderPanel from './pages/LeaderPanel'
 
 const INITIAL_SCORES = [
   { id: 'ignis', name: 'IGNIS', color: '#FF6A00', score: 85, icon: '🔥' },
@@ -47,6 +48,14 @@ function App() {
         element={
           <IgnisLayout>
             <Points factionScores={factionScores} setFactionScores={setFactionScores} />
+          </IgnisLayout>
+        }
+      />
+      <Route
+        path="/leader-panel"
+        element={
+          <IgnisLayout>
+            <LeaderPanel />
           </IgnisLayout>
         }
       />

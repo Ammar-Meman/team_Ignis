@@ -178,8 +178,31 @@ const SectionEmbers = ({ count = 15 }) => {
 /* ────────────────────────────────────────────────────
    HOME PAGE
    ──────────────────────────────────────────────────── */
+const FALLBACK_GAMES = [
+  { rank: 1, name: 'Cricket' },
+  { rank: 2, name: 'Football' },
+  { rank: 3, name: 'Basketball' },
+]
+
+/** Safely load leader games from localStorage */
+const loadVanguardGames = () => {
+  try {
+    const stored = localStorage.getItem('ignis_leader_games')
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return { games: parsed.sort((a, b) => a.rank - b.rank), isFallback: false }
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to parse leader games:', e)
+  }
+  return { games: FALLBACK_GAMES, isFallback: true }
+}
+
 const Home = ({ factionScores }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const { games: vanguardGames, isFallback } = useMemo(loadVanguardGames, [])
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -268,7 +291,7 @@ const Home = ({ factionScores }) => {
       </section>
 
       {/* ═══════════════════════════════════════════════
-          SECTION 2: TODAY'S ACTIVE MODULES
+          SECTION 2: VANGUARD'S ACTIVE MODULES
           ═══════════════════════════════════════════════ */}
       <section className="ignis-section modules-section" id="events">
         <SectionEmbers count={15} />
@@ -276,29 +299,39 @@ const Home = ({ factionScores }) => {
           <RevealSection animation="fade-up">
             <div className="section-header section-header--center">
               <span className="ignis-label">⚡ IGNIS PRESENTS</span>
-              <h2 className="ignis-heading">TODAY'S ACTIVE <span className="ignis-fire-text">MODULES</span></h2>
-              <p className="section-subtitle">Choose your engagement. The Arena awaits.</p>
+              <h2 className="ignis-heading">VANGUARD'S ACTIVE <span className="ignis-fire-text">MODULES</span></h2>
+              <p className="section-subtitle">
+                {isFallback
+                  ? 'Awaiting Leader Selection — showing default modules.'
+                  : 'Leader-selected games. The Arena awaits.'}
+              </p>
             </div>
           </RevealSection>
 
-          <div className="modules-grid">
-            {[
-              { title: 'LIVE POLL ARENA', status: 'LIVE', statusColor: '#FF3C3C', desc: 'Cast your vote in the most heated battles of the day.', icon: '🗳️' },
-              { title: 'IGNITE MODE', status: 'UPCOMING', statusColor: '#FF6A00', desc: 'A rapid-fire round of polls. Quick answers, big impact.', icon: '⚡' },
-              { title: 'TRENDING WAR', status: 'ACTIVE', statusColor: '#2D9F2D', desc: 'Jump into the most debated topics right now.', icon: '🔥' },
-            ].map((module, i) => (
-              <RevealSection key={i} animation="scale-in" delay={i * 0.15}>
-                <div className="module-card ignis-card" id={`module-${i + 1}`}>
+          <div className={`modules-grid ${vanguardGames.length === 1 ? 'modules-grid--single' : ''}`}>
+            {vanguardGames.map((game, i) => (
+              <RevealSection key={game.rank} animation="scale-in" delay={i * 0.15}>
+                <div
+                  className={`module-card ignis-card vanguard-card ${game.rank === 1 ? 'vanguard-card--rank1' : ''}`}
+                  id={`vanguard-${game.rank}`}
+                >
+                  {game.rank === 1 && (
+                    <div className="vanguard-card__badge">🏆 #1</div>
+                  )}
                   <div className="module-card__header">
-                    <span className="module-status" style={{ color: module.statusColor, borderColor: module.statusColor }}>
-                      ● {module.status}
+                    <span className="module-status" style={{
+                      color: game.rank === 1 ? '#FFD600' : 'var(--ignis-orange)',
+                      borderColor: game.rank === 1 ? '#FFD600' : 'var(--ignis-orange)'
+                    }}>
+                      ● RANK {game.rank}
                     </span>
                   </div>
-                  <div className="module-card__icon">{module.icon}</div>
-                  <h3 className="module-card__title">{module.title}</h3>
-                  <p className="module-card__desc">{module.desc}</p>
+                  <div className="module-card__icon">
+                    {game.rank === 1 ? '🏆' : game.rank === 2 ? '🥈' : game.rank === 3 ? '🥉' : '🎮'}
+                  </div>
+                  <h3 className="module-card__title">{game.name.toUpperCase()}</h3>
                   <div className="module-card__footer">
-                    <span className="ignis-mono">ENTER →</span>
+                    <span className="ignis-mono">RANK #{game.rank}</span>
                   </div>
                 </div>
               </RevealSection>
