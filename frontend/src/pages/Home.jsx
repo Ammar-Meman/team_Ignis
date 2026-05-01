@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import './Home.css'
 
 /* ── Utility: Animated Counter ── */
@@ -357,9 +358,9 @@ const Home = ({ factionScores }) => {
               <p className="battle-desc">
                 Engage in polls that shape the conversation. Your vote isn't just a click — it's a declaration of where you stand.
               </p>
-              <button className="ignis-btn-primary" id="battle-enter">
+              <Link to="/polls" className="ignis-btn-primary" id="battle-enter" style={{ textDecoration: 'none', display: 'inline-block' }}>
                 Enter Battle →
-              </button>
+              </Link>
             </RevealSection>
 
             <RevealSection animation="slide-right" delay={0.2} className="battle-poll">
@@ -412,19 +413,18 @@ const Home = ({ factionScores }) => {
             </RevealSection>
 
             <RevealSection animation="slide-right" delay={0.2} className="create-text">
-              <span className="ignis-label">🛠️ FORGE</span>
+              <span className="ignis-label">🛠️ GRAND MASTER FORGE</span>
               <h2 className="ignis-heading">
                 ASK. IGNITE.<br />
                 <span className="ignis-fire-text">INFLUENCE.</span>
               </h2>
               <hr className="ignis-divider" />
               <p className="create-desc">
-                Got a question worth debating? Forge it into a poll and watch the Arena
-                come alive with responses.
+                Only the Grand Master can forge new polls. Check the Arena to vote on active decrees.
               </p>
-              <button className="ignis-btn-outline" id="create-poll-cta">
-                Create Your Poll →
-              </button>
+              <Link to="/polls" className="ignis-btn-outline" id="create-poll-cta" style={{ textDecoration: 'none', display: 'inline-block' }}>
+                View Active Polls →
+              </Link>
             </RevealSection>
           </div>
         </div>
@@ -550,9 +550,9 @@ const Home = ({ factionScores }) => {
                 Choose your allegiance. Compete for dominance. Rise through the ranks.
                 Every vote, every debate, every action fuels your faction's fire.
               </p>
-              <button className="ignis-btn-outline" id="explore-factions">
+              <a href="#factions" className="ignis-btn-outline" id="explore-factions" style={{ textDecoration: 'none', display: 'inline-block' }}>
                 Explore Factions →
-              </button>
+              </a>
             </RevealSection>
 
             <RevealSection animation="fade-up" delay={0.15} className="community-cards">

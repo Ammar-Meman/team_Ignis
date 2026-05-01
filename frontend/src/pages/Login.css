@@ -146,6 +146,43 @@
   gap: var(--space-4);
 }
 
+/* ── Role Toggle ── */
+.login-role-toggle {
+  display: flex;
+  background: rgba(11, 11, 11, 0.8);
+  border: 1px solid var(--ignis-border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  gap: 4px;
+}
+
+.login-role-btn {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-xs);
+  color: var(--ignis-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--ease-base);
+}
+
+.login-role-btn.active {
+  background: var(--ignis-orange);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255, 106, 0, 0.3);
+}
+
+.login-role-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ignis-text);
+}
+
 .login-field {
   position: relative;
 }
