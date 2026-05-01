@@ -16,14 +16,15 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Login function
-  const login = async (grNo, password) => {
+  const login = async (grNo, password, role) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ grNo, password }),
+        body: JSON.stringify({ grNo, password, role }),
       });
 
       const data = await response.json();
