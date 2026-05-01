@@ -1,13 +1,16 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import './Login.css'
 
 const Login = () => {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [grNo, setGrNo] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('embers')
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
   /* Generate random ember particles once */
   const embers = useMemo(() =>
@@ -21,15 +24,19 @@ const Login = () => {
     })), []
   )
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoggingIn(true)
+    setErrorMsg('')
     
-    // Simulate API delay
-    setTimeout(() => {
-      console.log('Login successful:', { grNo, password, role })
-      navigate('/polls')
-    }, 1500)
+    const result = await login(grNo, password)
+    
+    setIsLoggingIn(false)
+    if (result.success) {
+      navigate('/')
+    } else {
+      setErrorMsg(result.message)
+    }
   }
 
   return (
@@ -70,6 +77,8 @@ const Login = () => {
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
+          {errorMsg && <div className="login-error-msg" style={{ color: 'var(--ignis-red)', textAlign: 'center', marginBottom: '1rem', fontSize: '0.9rem' }}>{errorMsg}</div>}
+          
           {/* Role Field */}
           <div className="login-field">
             <label className="login-field__label">Select Identity</label>
