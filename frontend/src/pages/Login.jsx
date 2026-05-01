@@ -6,6 +6,7 @@ const Login = () => {
   const navigate = useNavigate()
   const [grNo, setGrNo] = useState('')
   const [password, setPassword] = useState('')
+  const [role, setRole] = useState('embers')
   const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   /* Generate random ember particles once */
@@ -26,7 +27,7 @@ const Login = () => {
     
     // Simulate API delay
     setTimeout(() => {
-      console.log('Login successful:', { grNo, password })
+      console.log('Login successful:', { grNo, password, role })
       navigate('/polls')
     }, 1500)
   }
@@ -69,6 +70,27 @@ const Login = () => {
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
+          {/* Role Field */}
+          <div className="login-field">
+            <label className="login-field__label">Select Identity</label>
+            <div className="login-role-toggle">
+              <button 
+                type="button" 
+                className={`login-role-btn ${role === 'embers' ? 'active' : ''}`}
+                onClick={() => setRole('embers')}
+              >
+                Embers
+              </button>
+              <button 
+                type="button" 
+                className={`login-role-btn ${role === 'admin' ? 'active' : ''}`}
+                onClick={() => setRole('admin')}
+              >
+                Grand Master
+              </button>
+            </div>
+          </div>
+
           {/* GR No. Field */}
           <div className="login-field">
             <label className="login-field__label" htmlFor="login-grno">

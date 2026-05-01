@@ -63,6 +63,7 @@ const INITIAL_POLLS = [
 ]
 
 const STORAGE_KEY = 'ignis_polls'
+const VOTED_KEY = 'ignis_voted_polls'
 
 /** Load polls from localStorage with fallback to INITIAL_POLLS */
 const loadPolls = () => {
@@ -78,8 +79,20 @@ const loadPolls = () => {
   return INITIAL_POLLS
 }
 
+/** Load voted poll IDs from localStorage */
+const loadVotedPolls = () => {
+  try {
+    const stored = localStorage.getItem(VOTED_KEY)
+    if (stored) return JSON.parse(stored)
+  } catch (e) {
+    console.warn('Failed to parse voted polls:', e)
+  }
+  return []
+}
+
 const Polls = () => {
   const [polls, setPolls] = useState(loadPolls)
+  const [votedPolls, setVotedPolls] = useState(loadVotedPolls)
   const [newPoll, setNewPoll] = useState({
     title: '',
     description: '',
@@ -87,7 +100,7 @@ const Polls = () => {
     multiple: true
   })
 
-  // Sync polls to localStorage on every change
+  // Sync polls and voted state to localStorage on every change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(polls))
@@ -95,6 +108,14 @@ const Polls = () => {
       console.warn('Failed to save polls to localStorage:', e)
     }
   }, [polls])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(VOTED_KEY, JSON.stringify(votedPolls))
+    } catch (e) {
+      console.warn('Failed to save voted polls to localStorage:', e)
+    }
+  }, [votedPolls])
 
   // Handle Poll Creation
   const handleAddOption = () => {
@@ -138,6 +159,9 @@ const Polls = () => {
 
   // Handle Voting
   const handleVote = (pollId, optionId) => {
+    if (votedPolls.includes(pollId)) return // Prevent multiple votes
+    setVotedPolls([...votedPolls, pollId])
+
     setPolls(prevPolls => prevPolls.map(poll => {
       if (poll.id !== pollId) return poll
       
@@ -173,7 +197,7 @@ const Polls = () => {
         {/* ── CREATE POLL SIDEBAR ── */}
         <aside className="create-poll-panel">
           <div className="ignis-panel">
-            <h2 className="ignis-heading" style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Forge New Poll</h2>
+            <h2 className="ignis-heading" style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>Grand Master Forge</h2>
             <form className="create-poll-form" onSubmit={onCreatePoll}>
               <div className="login-field">
                 <label className="login-field__label">Question</label>
@@ -248,9 +272,14 @@ const Polls = () => {
         {/* ── POLLS FEED ── */}
         <main className="polls-feed">
           {polls.map(poll => (
-            <div key={poll.id} className="ignis-panel poll-card">
+            <div key={poll.id} className={`ignis-panel poll-card ${votedPolls.includes(poll.id) ? 'poll-card--voted' : ''}`}>
               <div className="poll-card__header">
-                <h3 className="poll-card__title">{poll.title}</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                  <h3 className="poll-card__title">{poll.title}</h3>
+                  {votedPolls.includes(poll.id) && (
+                    <span className="ignis-mono" style={{ color: '#2D9F2D', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #2D9F2D', padding: '2px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>✓ VOTED</span>
+                  )}
+                </div>
                 {poll.description && <p className="poll-card__meta" style={{ textTransform: 'none', color: 'var(--ignis-muted)', marginBottom: '8px' }}>{poll.description}</p>}
                 <div className="poll-card__meta">
                   Posted by <span style={{ color: 'var(--ignis-orange)' }}>{poll.author}</span> • {poll.createdAt} • {poll.multiple ? 'Multiple Choice' : 'Single Choice'}
@@ -261,11 +290,12 @@ const Polls = () => {
                 {poll.options.map(opt => {
                   const percentage = poll.totalVotes > 0 ? Math.round((opt.votes / poll.totalVotes) * 100) : 0
                   return (
-                    <label key={opt.id} className="poll-vote-option">
+                    <label key={opt.id} className={`poll-vote-option ${votedPolls.includes(poll.id) ? 'poll-vote-option--disabled' : ''}`}>
                       <input 
                         type={poll.multiple ? "checkbox" : "radio"} 
                         name={`poll-${poll.id}`}
                         onChange={() => handleVote(poll.id, opt.id)}
+                        disabled={votedPolls.includes(poll.id)}
                       />
                       <div className="poll-vote-option__content">
                         <div className="poll-result-bar" style={{ width: `${percentage}%` }} />
@@ -290,8 +320,6 @@ const Polls = () => {
                   >
                     DELETE
                   </button>
-                  <button className="ignis-btn-outline" style={{ padding: '8px 16px', fontSize: '0.7rem' }}>SHARE</button>
-                  <button className="ignis-btn-outline" style={{ padding: '8px 16px', fontSize: '0.7rem' }}>REPORT</button>
                 </div>
               </div>
             </div>
