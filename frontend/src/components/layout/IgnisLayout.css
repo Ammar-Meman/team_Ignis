@@ -225,7 +225,7 @@
 }
 
 .ignis-nav__cta--mobile {
-  display: none;
+  display: none !important;
 }
 
 /* ====================================================
@@ -263,14 +263,14 @@
   }
 
   .ignis-nav__cta--desktop {
-    display: none;
+    display: none !important;
   }
 
   .ignis-nav__cta--mobile {
-    display: inline-block;
+    display: inline-flex !important;
     margin-top: var(--space-2);
     width: 100%;
-    text-align: center;
+    justify-content: center;
   }
 
   .ignis-footer__inner {
