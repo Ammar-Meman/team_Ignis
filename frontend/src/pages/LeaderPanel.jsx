@@ -1,0 +1,291 @@
+import React, { useState, useEffect, useRef } from 'react'
+import './LeaderPanel.css'
+
+const STORAGE_KEY = 'ignis_leader_games'
+
+/** Safely load games from localStorage */
+const loadGames = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed)) return parsed
+    }
+  } catch (e) {
+    console.warn('Failed to parse leader games from localStorage:', e)
+  }
+  return []
+}
+
+const LeaderPanel = () => {
+  const [games, setGames] = useState(loadGames)
+  const [inputValue, setInputValue] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [editValue, setEditValue] = useState('')
+  const [error, setError] = useState('')
+  const [isAdding, setIsAdding] = useState(false)
+  const inputRef = useRef(null)
+  const editRef = useRef(null)
+
+  // Sync games to localStorage on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(games))
+    } catch (e) {
+      console.warn('Failed to save games to localStorage:', e)
+    }
+  }, [games])
+
+  // Focus edit input when editing begins
+  useEffect(() => {
+    if (editingId !== null && editRef.current) {
+      editRef.current.focus()
+      editRef.current.select()
+    }
+  }, [editingId])
+
+  /** Check for duplicate name (case-insensitive), excluding a given id */
+  const isDuplicate = (name, excludeId = null) => {
+    return games.some(
+      g => g.name.toLowerCase() === name.toLowerCase() && g.rank !== excludeId
+    )
+  }
+
+  /** Re-sequence ranks 1,2,3... */
+  const resequence = (list) => {
+    return list.map((g, i) => ({ ...g, rank: i + 1 }))
+  }
+
+  /** Add a new game */
+  const handleAddGame = () => {
+    if (isAdding) return // prevent rapid clicks
+
+    const trimmed = inputValue.trim()
+    if (!trimmed) {
+      setError('Game name cannot be empty.')
+      return
+    }
+    if (isDuplicate(trimmed)) {
+      setError(`"${trimmed}" already exists.`)
+      return
+    }
+
+    setIsAdding(true)
+    setError('')
+
+    const newGame = {
+      rank: games.length + 1,
+      name: trimmed
+    }
+
+    setGames(prev => [...prev, newGame])
+    setInputValue('')
+
+    // Re-enable after a short delay to prevent double-clicks
+    setTimeout(() => setIsAdding(false), 300)
+
+    // Focus input for quick consecutive adds
+    if (inputRef.current) inputRef.current.focus()
+  }
+
+  /** Handle Enter key on add input */
+  const handleAddKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAddGame()
+    }
+  }
+
+  /** Start editing a game */
+  const startEdit = (game) => {
+    setEditingId(game.rank)
+    setEditValue(game.name)
+    setError('')
+  }
+
+  /** Cancel editing */
+  const cancelEdit = () => {
+    setEditingId(null)
+    setEditValue('')
+    setError('')
+  }
+
+  /** Save edited game */
+  const saveEdit = (rank) => {
+    const trimmed = editValue.trim()
+    if (!trimmed) {
+      setError('Game name cannot be empty.')
+      return
+    }
+    if (isDuplicate(trimmed, rank)) {
+      setError(`"${trimmed}" already exists.`)
+      return
+    }
+
+    setGames(prev =>
+      prev.map(g => g.rank === rank ? { ...g, name: trimmed } : g)
+    )
+    setEditingId(null)
+    setEditValue('')
+    setError('')
+  }
+
+  /** Handle Enter/Escape on edit input */
+  const handleEditKeyDown = (e, rank) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      saveEdit(rank)
+    } else if (e.key === 'Escape') {
+      cancelEdit()
+    }
+  }
+
+  /** Delete a game and re-sequence ranks */
+  const handleDelete = (rank) => {
+    setGames(prev => resequence(prev.filter(g => g.rank !== rank)))
+    if (editingId === rank) cancelEdit()
+  }
+
+  return (
+    <div className="ignis-container leader-page">
+      <div className="section-header">
+        <h1 className="ignis-title"><span className="ignis-fire-text">LEADER</span> PANEL</h1>
+        <p className="section-subtitle">Command the Arena. Select and rank the active games.</p>
+      </div>
+
+      <div className="leader-grid">
+        {/* ── GAME SELECTOR ── */}
+        <div className="ignis-panel leader-selector">
+          <h2 className="ignis-heading" style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>
+            Game Selector
+          </h2>
+
+          {/* Add Game */}
+          <div className="leader-add-form">
+            <div className="leader-add-row">
+              <input
+                ref={inputRef}
+                className="ignis-input"
+                placeholder="Enter game name..."
+                value={inputValue}
+                onChange={(e) => { setInputValue(e.target.value); setError('') }}
+                onKeyDown={handleAddKeyDown}
+              />
+              <button
+                className="ignis-btn-primary leader-add-btn"
+                onClick={handleAddGame}
+                disabled={isAdding}
+              >
+                ADD GAME
+              </button>
+            </div>
+            {error && <p className="leader-error">{error}</p>}
+          </div>
+
+          {/* Game List */}
+          <div className="leader-game-list">
+            {games.length === 0 ? (
+              <div className="leader-empty">
+                <span className="leader-empty__icon">🎮</span>
+                <p className="leader-empty__text">No games added yet.</p>
+                <p className="leader-empty__sub">Add a game above to get started.</p>
+              </div>
+            ) : (
+              games.map(game => (
+                <div
+                  key={game.rank}
+                  className={`leader-game-item ${game.rank === 1 ? 'leader-game-item--top' : ''}`}
+                >
+                  <span className={`leader-rank ${game.rank === 1 ? 'leader-rank--gold' : ''}`}>
+                    #{game.rank}
+                  </span>
+
+                  {editingId === game.rank ? (
+                    <div className="leader-edit-row">
+                      <input
+                        ref={editRef}
+                        className="ignis-input leader-edit-input"
+                        value={editValue}
+                        onChange={(e) => { setEditValue(e.target.value); setError('') }}
+                        onKeyDown={(e) => handleEditKeyDown(e, game.rank)}
+                      />
+                      <button
+                        className="ignis-btn-primary leader-action-btn"
+                        onClick={() => saveEdit(game.rank)}
+                      >
+                        ✓
+                      </button>
+                      <button
+                        className="ignis-btn-outline leader-action-btn"
+                        onClick={cancelEdit}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="leader-game-name">{game.name}</span>
+                      <div className="leader-game-actions">
+                        <button
+                          className="ignis-btn-outline leader-action-btn"
+                          onClick={() => startEdit(game)}
+                          title="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="ignis-btn-outline leader-action-btn leader-action-btn--delete"
+                          onClick={() => handleDelete(game.rank)}
+                          title="Delete"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* ── LIVE PREVIEW ── */}
+        <div className="leader-preview">
+          <div className="ignis-panel">
+            <h2 className="ignis-heading" style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>
+              Live Preview
+            </h2>
+            <p className="ignis-mono" style={{ marginBottom: '1.5rem', fontSize: '0.75rem' }}>
+              // HOW YOUR MODULES WILL APPEAR ON THE HOMEPAGE
+            </p>
+
+            {games.length === 0 ? (
+              <div className="leader-preview-empty">
+                <p className="ignis-mono" style={{ color: 'var(--ignis-muted)' }}>
+                  Fallback modules will be displayed when no games are selected.
+                </p>
+              </div>
+            ) : (
+              <div className="leader-preview-grid">
+                {games.map(game => (
+                  <div
+                    key={game.rank}
+                    className={`leader-preview-card ignis-card ${game.rank === 1 ? 'leader-preview-card--top' : ''}`}
+                  >
+                    {game.rank === 1 && (
+                      <span className="leader-preview-badge">🏆 #1</span>
+                    )}
+                    <span className="leader-preview-rank">RANK {game.rank}</span>
+                    <h3 className="leader-preview-name">{game.name}</h3>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default LeaderPanel

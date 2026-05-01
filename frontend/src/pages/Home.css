@@ -235,11 +235,51 @@
 
 .modules-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-6);
   margin-top: var(--space-10);
   align-items: stretch;
 }
+
+.modules-grid--single {
+  grid-template-columns: 1fr;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Vanguard Dynamic Cards ── */
+.vanguard-card {
+  position: relative;
+  text-align: center;
+}
+
+.vanguard-card--rank1 {
+  border-color: var(--ignis-orange) !important;
+  box-shadow:
+    0 0 30px rgba(255, 106, 0, 0.15),
+    0 0 60px rgba(255, 60, 60, 0.08),
+    inset 0 0 20px rgba(255, 106, 0, 0.05) !important;
+  animation: rage-pulse 4s ease-in-out infinite;
+}
+
+.vanguard-card__badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #FFD600;
+  background: rgba(255, 214, 0, 0.12);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid #FFD600;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  text-shadow: 0 0 6px rgba(255, 214, 0, 0.4);
+}
+
 
 .module-card {
   padding: var(--space-8);

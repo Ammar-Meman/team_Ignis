@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Polls.css'
 
 const INITIAL_POLLS = [
@@ -62,14 +62,39 @@ const INITIAL_POLLS = [
   }
 ]
 
+const STORAGE_KEY = 'ignis_polls'
+
+/** Load polls from localStorage with fallback to INITIAL_POLLS */
+const loadPolls = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch (e) {
+    console.warn('Failed to parse polls from localStorage:', e)
+  }
+  return INITIAL_POLLS
+}
+
 const Polls = () => {
-  const [polls, setPolls] = useState(INITIAL_POLLS)
+  const [polls, setPolls] = useState(loadPolls)
   const [newPoll, setNewPoll] = useState({
     title: '',
     description: '',
     options: ['', ''],
     multiple: true
   })
+
+  // Sync polls to localStorage on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(polls))
+    } catch (e) {
+      console.warn('Failed to save polls to localStorage:', e)
+    }
+  }, [polls])
 
   // Handle Poll Creation
   const handleAddOption = () => {

@@ -1,0 +1,232 @@
+/* ====================================================
+   LEADER PANEL PAGE — IGNIS JWAALA
+   ==================================================== */
+
+.leader-page {
+  padding-top: 160px !important;
+  padding-bottom: var(--space-24) !important;
+  min-height: 90vh;
+}
+
+.leader-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+/* ── Add Game Form ── */
+.leader-add-form {
+  margin-bottom: var(--space-8);
+}
+
+.leader-add-row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.leader-add-btn {
+  white-space: nowrap;
+  padding: 12px 24px !important;
+  font-size: 0.8rem !important;
+}
+
+.leader-error {
+  color: var(--ignis-red);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  margin-top: var(--space-2);
+  letter-spacing: 0.03em;
+}
+
+/* ── Game List ── */
+.leader-game-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.leader-game-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--ignis-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--ease-base);
+}
+
+.leader-game-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.leader-game-item--top {
+  border-color: var(--ignis-orange);
+  background: rgba(255, 106, 0, 0.04);
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.08);
+}
+
+.leader-game-item--top:hover {
+  background: rgba(255, 106, 0, 0.07);
+}
+
+/* ── Rank Badge ── */
+.leader-rank {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--ignis-muted);
+  min-width: 36px;
+  text-align: center;
+}
+
+.leader-rank--gold {
+  color: var(--ignis-orange);
+  text-shadow: 0 0 8px rgba(255, 106, 0, 0.4);
+}
+
+/* ── Game Name ── */
+.leader-game-name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  flex: 1;
+}
+
+/* ── Actions ── */
+.leader-game-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.leader-action-btn {
+  padding: 8px 12px !important;
+  font-size: 0.8rem !important;
+  min-width: unset;
+  border-radius: var(--radius-xs) !important;
+}
+
+.leader-action-btn--delete {
+  border-color: var(--ignis-red) !important;
+  color: var(--ignis-red) !important;
+}
+
+.leader-action-btn--delete:hover {
+  background: rgba(255, 60, 60, 0.12) !important;
+}
+
+/* ── Inline Edit ── */
+.leader-edit-row {
+  display: flex;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.leader-edit-input {
+  flex: 1;
+}
+
+/* ── Empty State ── */
+.leader-empty {
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+}
+
+.leader-empty__icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.leader-empty__text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--ignis-muted);
+  margin-bottom: var(--space-2);
+}
+
+.leader-empty__sub {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ignis-dim);
+}
+
+/* ── Live Preview ── */
+.leader-preview-empty {
+  padding: var(--space-8);
+  text-align: center;
+  border: 1px dashed var(--ignis-border);
+  border-radius: var(--radius-sm);
+}
+
+.leader-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.leader-preview-card {
+  padding: var(--space-6);
+  text-align: center;
+  position: relative;
+  cursor: default;
+}
+
+.leader-preview-card--top {
+  border-color: var(--ignis-orange) !important;
+  box-shadow: 0 0 25px rgba(255, 106, 0, 0.15), inset 0 0 20px rgba(255, 106, 0, 0.05);
+  animation: rage-pulse 4s ease-in-out infinite;
+}
+
+.leader-preview-badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--ignis-orange);
+  background: rgba(255, 106, 0, 0.12);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--ignis-orange);
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.leader-preview-rank {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ignis-dim);
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-2);
+}
+
+.leader-preview-name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+  .leader-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .leader-add-row {
+    flex-direction: column;
+  }
+
+  .leader-add-btn {
+    width: 100%;
+  }
+}
