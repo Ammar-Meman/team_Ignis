@@ -1,41 +1,60 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { useAuth } from '../context/AuthContext'
 import './LeaderPanel.css'
 
-const STORAGE_KEY = 'ignis_leader_games'
-
-/** Safely load games from localStorage */
-const loadGames = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      if (Array.isArray(parsed)) return parsed
-    }
-  } catch (e) {
-    console.warn('Failed to parse leader games from localStorage:', e)
-  }
-  return []
-}
+const API_URL = import.meta.env.VITE_API_URL || 'https://team-ignis.onrender.com'
 
 const LeaderPanel = () => {
-  const [games, setGames] = useState(loadGames)
+  const { user } = useAuth()
+  const [games, setGames] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [editValue, setEditValue] = useState('')
   const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const inputRef = useRef(null)
   const editRef = useRef(null)
 
-  // Sync games to localStorage on every change
+  /** Fetch games from backend on mount */
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(games))
-    } catch (e) {
-      console.warn('Failed to save games to localStorage:', e)
+    const fetchGames = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/games`)
+        if (res.ok) {
+          const data = await res.json()
+          setGames(data.map((g, i) => ({ rank: i + 1, name: g.name })))
+        }
+      } catch (e) {
+        console.warn('Failed to fetch games:', e)
+      } finally {
+        setLoaded(true)
+      }
     }
-  }, [games])
+    fetchGames()
+  }, [])
+
+  /** Save current games list to the backend */
+  const syncToBackend = async (updatedGames) => {
+    if (!user?.token) return
+    setSaving(true)
+    try {
+      await fetch(`${API_URL}/api/games`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ games: updatedGames }),
+      })
+    } catch (e) {
+      console.error('Failed to save games to backend:', e)
+    } finally {
+      setSaving(false)
+    }
+  }
 
   // Focus edit input when editing begins
   useEffect(() => {
@@ -79,7 +98,9 @@ const LeaderPanel = () => {
       name: trimmed
     }
 
-    setGames(prev => [...prev, newGame])
+    const updated = [...games, newGame]
+    setGames(updated)
+    syncToBackend(updated)
     setInputValue('')
 
     // Re-enable after a short delay to prevent double-clicks
@@ -123,9 +144,9 @@ const LeaderPanel = () => {
       return
     }
 
-    setGames(prev =>
-      prev.map(g => g.rank === rank ? { ...g, name: trimmed } : g)
-    )
+    const updated = games.map(g => g.rank === rank ? { ...g, name: trimmed } : g)
+    setGames(updated)
+    syncToBackend(updated)
     setEditingId(null)
     setEditValue('')
     setError('')
@@ -143,8 +164,18 @@ const LeaderPanel = () => {
 
   /** Delete a game and re-sequence ranks */
   const handleDelete = (rank) => {
-    setGames(prev => resequence(prev.filter(g => g.rank !== rank)))
+    const updated = resequence(games.filter(g => g.rank !== rank))
+    setGames(updated)
+    syncToBackend(updated)
     if (editingId === rank) cancelEdit()
+  }
+
+  if (!loaded) {
+    return (
+      <div className="ignis-container leader-page" style={{ textAlign: 'center', paddingTop: '8rem' }}>
+        <span className="ignis-mono" style={{ color: 'var(--ignis-orange)' }}>Loading games...</span>
+      </div>
+    )
   }
 
   return (
@@ -157,6 +188,12 @@ const LeaderPanel = () => {
         <h1 className="ignis-title"><span className="ignis-fire-text">LEADER</span> PANEL</h1>
         <p className="section-subtitle">Command the Arena. Select and rank the active games.</p>
       </div>
+
+      {saving && (
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <span className="ignis-mono" style={{ color: 'var(--ignis-orange)', fontSize: '0.8rem' }}>⏳ SYNCING TO SERVER...</span>
+        </div>
+      )}
 
       <div className="leader-grid">
         {/* ── GAME SELECTOR ── */}

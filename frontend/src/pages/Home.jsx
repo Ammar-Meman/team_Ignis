@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import './Home.css'
@@ -186,25 +186,31 @@ const FALLBACK_GAMES = [
   { rank: 3, name: 'Basketball' },
 ]
 
-/** Safely load leader games from localStorage */
-const loadVanguardGames = () => {
-  try {
-    const stored = localStorage.getItem('ignis_leader_games')
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return { games: parsed.sort((a, b) => a.rank - b.rank), isFallback: false }
-      }
-    }
-  } catch (e) {
-    console.warn('Failed to parse leader games:', e)
-  }
-  return { games: FALLBACK_GAMES, isFallback: true }
-}
+const API_URL = import.meta.env.VITE_API_URL || 'https://team-ignis.onrender.com'
 
 const Home = ({ factionScores }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const { games: vanguardGames, isFallback } = useMemo(loadVanguardGames, [])
+  const [vanguardGames, setVanguardGames] = useState(FALLBACK_GAMES)
+  const [isFallback, setIsFallback] = useState(true)
+
+  /** Fetch games from backend on mount */
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/games`)
+        if (res.ok) {
+          const data = await res.json()
+          if (Array.isArray(data) && data.length > 0) {
+            setVanguardGames(data.sort((a, b) => a.rank - b.rank))
+            setIsFallback(false)
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to fetch games from API:', e)
+      }
+    }
+    fetchGames()
+  }, [])
 
   useEffect(() => {
     const handleMouseMove = (e) => {
