@@ -16,6 +16,7 @@ connectDB();
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/games', require('./routes/gameRoutes'));
 
 // Basic Route
 app.get('/api/health', (req, res) => {

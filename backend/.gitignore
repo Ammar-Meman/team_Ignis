@@ -3,3 +3,5 @@ node_modules/
 .DS_Store
 *.log
 data/users.json
+API_DOCUMENTATION.md
+Ignis_Jwaala_API.postman_collection.json
